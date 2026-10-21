@@ -61,7 +61,11 @@ app.get('/api/health', async (req, res) => {
     });
   } catch (err) {
     console.error('❌ Error en health check:', err.message);
-    res.status(500).json({ status: 'error', message: 'Error de conexión con la base de datos' });
+    res.status(500).json({ 
+      status: 'error', 
+      message: 'Error de conexión con la base de datos',
+      detail: err.message
+    });
   }
 });
 

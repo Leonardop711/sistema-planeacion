@@ -7,9 +7,13 @@ if (!connectionString) {
   console.warn("⚠️ ADVERTENCIA: DATABASE_URL no está definida en las variables de entorno.");
 }
 
+// Determinar si se requiere SSL (ej. para RDS con SSL o Railway con SSL)
+// En Docker o local se mantiene desactivado (false) para evitar errores de handshake
+const useSSL = process.env.DB_SSL === 'true' || (connectionString && connectionString.includes('sslmode=require'));
+
 const pool = new Pool({
   connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: useSSL ? { rejectUnauthorized: false } : false
 });
 
 pool.on('error', (err) => {
