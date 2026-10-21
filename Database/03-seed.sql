@@ -96,7 +96,7 @@ BEGIN
     ON CONFLICT (email) DO NOTHING;
 
     -- 4. Insertar Usuario Viewer de Prueba (Contraloría)
-    -- Contraseña inicial: 'Viewer123!' (BCrypt Hash: $2b$10$YqGTl/.nlJ1QO86Qpr8lDu/d8nCq2GnBalYiHsTFZodAauGvj.w4q)
+    -- Contraseña inicial: 'Admin123!'
     INSERT INTO seguridad.users (name, email, password_hash, role_id, dependency_id, cargo, tipo_enlace)
     VALUES (
         'Auditor General (Viewer)',
@@ -106,6 +106,37 @@ BEGIN
         v_dep_contraloria_id,
         'Auditor de Control Interno',
         'titular'
+    )
+    ON CONFLICT (email) DO NOTHING;
+
+    -- 5. Insertar Usuario Revisor de Inversión Pública (SEPLAN)
+    -- Contraseña inicial: 'Admin123!'
+    INSERT INTO seguridad.users (name, email, password_hash, role_id, dependency_id, direccion_id, cargo, tipo_enlace)
+    VALUES (
+        'Lic. Evaluador de Inversión',
+        'inversion@planeacion.gob.mx',
+        '$2b$10$YqGTl/.nlJ1QO86Qpr8lDu/d8nCq2GnBalYiHsTFZodAauGvj.w4q',
+        v_role_revisor_id,
+        v_dep_planeacion_id,
+        v_dir_inversion_id,
+        'Dictaminador de Proyectos CIP',
+        'operativo'
+    )
+    ON CONFLICT (email) DO NOTHING;
+
+    -- 6. Insertar Usuario Operador de Captura (Obras Públicas)
+    -- Contraseña inicial: 'Admin123!'
+    INSERT INTO seguridad.users (name, email, password_hash, role_id, dependency_id, direccion_id, cargo, tipo_enlace, permisos_menu)
+    VALUES (
+        'Ing. Capturista Obras Viales',
+        'obras@municipio.gob.mx',
+        '$2b$10$YqGTl/.nlJ1QO86Qpr8lDu/d8nCq2GnBalYiHsTFZodAauGvj.w4q',
+        v_role_editor_id,
+        v_dep_obras_id,
+        (SELECT id FROM seguridad.direcciones WHERE name = 'Dirección de Obras Viales' LIMIT 1),
+        'Enlace Operativo POA / CIP',
+        'operativo',
+        '["cip", "arboles", "estrategias", "lineas_accion", "notificaciones_dep"]'::jsonb
     )
     ON CONFLICT (email) DO NOTHING;
 
