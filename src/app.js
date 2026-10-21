@@ -16,12 +16,12 @@ app.use(helmet());
 
 const allowedOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:5173', 'http://localhost:3000'];
+  : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origen (como Postman o curl) o en la lista permitida
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Permitir solicitudes sin origen (curl, Postman), wildcard '*', lista permitida o cualquier puerto localhost
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
       return callback(null, true);
     }
     return callback(new Error('Bloqueado por directivas de CORS'));
