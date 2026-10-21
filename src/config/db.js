@@ -1,11 +1,16 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL;
+// Construcción inteligente de la cadena de conexión
+const dbUser = process.env.DB_USER || 'postgres';
+const dbPass = process.env.DB_PASSWORD || 'postgres';
+const dbHost = process.env.DB_HOST || 'postgres';
+const dbPort = process.env.DB_PORT || '5432';
+const dbName = process.env.DB_NAME || process.env.DATABASE || 'sistema_planeacion';
 
-if (!connectionString) {
-  console.warn("⚠️ ADVERTENCIA: DATABASE_URL no está definida en las variables de entorno.");
-}
+const connectionString = process.env.DATABASE_URL || `postgresql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}`;
+
+console.log(`🔌 Conectando a PostgreSQL: ${connectionString.replace(/:[^:@]*@/, ':****@')}`);
 
 // Determinar si se requiere SSL (ej. para RDS con SSL o Railway con SSL)
 // En Docker o local se mantiene desactivado (false) para evitar errores de handshake
