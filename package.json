@@ -1,0 +1,35 @@
+{
+  "name": "sistema-planeacion-backend",
+  "version": "2.0.0",
+  "description": "Backend modular y desacoplado para el Sistema de Planeación Municipal y Cartera de Inversión Pública",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "planeacion",
+    "poa",
+    "cip",
+    "express",
+    "postgresql",
+    "socket.io"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
