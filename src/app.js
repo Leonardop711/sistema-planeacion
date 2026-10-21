@@ -11,23 +11,32 @@ const notificacionesRoutes = require('./modules/notificaciones/notificacionesRou
 
 const app = express();
 
-// 1. Middlewares Globales de Seguridad
-app.use(helmet());
-
 const allowedOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
+  : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', '*'];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origen (curl, Postman), wildcard '*', lista permitida o cualquier puerto localhost
+    // Permitir solicitudes sin origen (curl, Postman), wildcard '*', o cualquier puerto localhost
     if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('Bloqueado por directivas de CORS'));
+    return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// 1. CORS debe ir ANTES de Helmet y antes de las rutas
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+// 2. Middlewares de Seguridad (permitiendo recursos cruzados)
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false
 }));
 
 app.use(express.json({ limit: '10mb' }));
